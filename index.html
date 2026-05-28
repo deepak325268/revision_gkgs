@@ -21,9 +21,10 @@
       --muted: #888;
       --accent-b: #1a56db;
       --accent-g: #0e9f6e;
+      --accent-o: #d97706;
       --pill-b: #ebf5ff;
       --pill-g: #e8faf4;
-      --done-line: #bbb;
+      --pill-o: #fef3c7;
       --radius: 14px;
     }
 
@@ -36,9 +37,10 @@
         --muted: #888;
         --accent-b: #4a9eff;
         --accent-g: #30d158;
+        --accent-o: #fbbf24;
         --pill-b: #1a2a3a;
         --pill-g: #1a2e1a;
-        --done-line: #555;
+        --pill-o: #2e2010;
       }
     }
 
@@ -50,11 +52,10 @@
       padding-bottom: 60px;
     }
 
-    /* Header */
     .header {
       background: var(--card);
       border-bottom: 1px solid var(--border);
-      padding: 52px 20px 20px;
+      padding: 52px 20px 0;
       position: sticky;
       top: 0;
       z-index: 10;
@@ -65,6 +66,7 @@
       align-items: flex-start;
       justify-content: space-between;
       gap: 12px;
+      padding-bottom: 14px;
     }
 
     .header h1 {
@@ -86,7 +88,6 @@
       margin-top: 3px;
       flex-shrink: 0;
       font-family: 'Inter', sans-serif;
-      letter-spacing: 0.3px;
     }
 
     .header-date {
@@ -96,9 +97,41 @@
       font-family: 'Noto Sans Devanagari', sans-serif;
     }
 
+    /* Tab buttons */
+    .tabs {
+      display: flex;
+      gap: 0;
+      border-top: 1px solid var(--border);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .tabs::-webkit-scrollbar { display: none; }
+
+    .tab-btn {
+      flex: 1;
+      padding: 12px 8px;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      color: var(--muted);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color 0.2s, border-color 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .tab-btn.active-b { color: var(--accent-b); border-bottom-color: var(--accent-b); }
+    .tab-btn.active-g { color: var(--accent-g); border-bottom-color: var(--accent-g); }
+    .tab-btn.active-o { color: var(--accent-o); border-bottom-color: var(--accent-o); }
+
     /* Progress */
     .progress-wrap {
-      margin-top: 14px;
+      padding: 10px 20px 14px;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
     }
 
     .progress-track {
@@ -110,11 +143,14 @@
 
     .progress-fill {
       height: 100%;
-      background: var(--accent-g);
       border-radius: 10px;
       width: 0%;
       transition: width 0.4s cubic-bezier(.4,0,.2,1);
     }
+
+    .fill-b { background: var(--accent-b); }
+    .fill-g { background: var(--accent-g); }
+    .fill-o { background: var(--accent-o); }
 
     .progress-label {
       font-size: 12px;
@@ -123,45 +159,25 @@
       font-family: 'Inter', sans-serif;
     }
 
-    /* Main */
     .main { padding: 20px 16px 0; max-width: 520px; margin: 0 auto; }
 
-    /* Subject block */
-    .subject-block { margin-bottom: 28px; }
-
-    .subject-label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 10px;
-      padding: 0 2px;
+    /* Done banner */
+    .done-banner {
+      display: none;
+      text-align: center;
+      padding: 20px;
+      margin: 0 0 24px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
     }
-
-    .subject-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
-    .dot-blue { background: var(--accent-b); }
-    .dot-green { background: var(--accent-g); }
-
-    .subject-name {
+    .done-banner.show { display: block; }
+    .done-banner h3 {
       font-family: 'Noto Sans Devanagari', sans-serif;
-      font-size: 14px;
+      font-size: 17px;
       font-weight: 600;
-      color: var(--muted);
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      font-size: 12px;
     }
-
-    .subject-count {
-      margin-left: auto;
-      font-size: 12px;
-      color: var(--muted);
-      font-family: 'Inter', sans-serif;
-    }
+    .done-banner p { font-size: 13px; color: var(--muted); margin-top: 4px; font-family: 'Noto Sans Devanagari', sans-serif; }
 
     /* Chapter card */
     .chapter-card {
@@ -178,9 +194,7 @@
       -webkit-tap-highlight-color: transparent;
       user-select: none;
     }
-
     .chapter-card:active { opacity: 0.7; }
-
     .chapter-card.done { opacity: 0.5; }
 
     .chapter-info { flex: 1; min-width: 0; }
@@ -192,24 +206,26 @@
       color: var(--text);
       line-height: 1.4;
     }
+    .chapter-card.done .chapter-name { text-decoration: line-through; color: var(--muted); }
 
-    .chapter-card.done .chapter-name {
-      text-decoration: line-through;
-      color: var(--muted);
+    .chapter-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
     }
 
-    .chapter-cls {
+    .pill {
       display: inline-block;
-      margin-top: 5px;
       font-size: 11px;
       font-weight: 500;
       padding: 2px 8px;
       border-radius: 6px;
       font-family: 'Inter', sans-serif;
     }
-
-    .cls-blue { background: var(--pill-b); color: var(--accent-b); }
-    .cls-green { background: var(--pill-g); color: var(--accent-g); }
+    .pill-b { background: var(--pill-b); color: var(--accent-b); }
+    .pill-g { background: var(--pill-g); color: var(--accent-g); }
+    .pill-o { background: var(--pill-o); color: var(--accent-o); }
 
     .check-box {
       width: 22px; height: 22px;
@@ -217,83 +233,35 @@
       border: 1.5px solid var(--border);
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
-      transition: all 0.2s;
       font-size: 12px;
+      transition: all 0.2s;
     }
-
-    .chapter-card.done .check-box {
-      background: var(--accent-g);
-      border-color: var(--accent-g);
-      color: #fff;
-    }
-
-    /* Done banner */
-    .done-banner {
-      display: none;
-      text-align: center;
-      padding: 20px;
-      margin: 0 0 24px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-    }
-
-    .done-banner.show { display: block; }
-
-    .done-banner .emoji { font-size: 28px; margin-bottom: 6px; }
-
-    .done-banner h3 {
-      font-family: 'Noto Sans Devanagari', sans-serif;
-      font-size: 17px;
-      font-weight: 600;
-      color: var(--accent-g);
-    }
-
-    .done-banner p {
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 4px;
-      font-family: 'Noto Sans Devanagari', sans-serif;
-    }
+    .check-b.checked { background: var(--accent-b); border-color: var(--accent-b); color: #fff; }
+    .check-g.checked { background: var(--accent-g); border-color: var(--accent-g); color: #fff; }
+    .check-o.checked { background: var(--accent-o); border-color: var(--accent-o); color: #fff; }
 
     /* Loading */
     .loading {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 80px 20px;
-      gap: 14px;
-      color: var(--muted);
-      font-size: 14px;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 80px 20px; gap: 14px; color: var(--muted); font-size: 14px;
     }
-
     .spinner {
       width: 28px; height: 28px;
       border: 2px solid var(--border);
-      border-top-color: var(--accent-b);
       border-radius: 50%;
       animation: spin 0.7s linear infinite;
     }
-
+    .spin-b { border-top-color: var(--accent-b); }
+    .spin-g { border-top-color: var(--accent-g); }
+    .spin-o { border-top-color: var(--accent-o); }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Error */
-    .error-box {
-      text-align: center;
-      padding: 60px 20px;
-    }
-
-    .error-box h2 { font-size: 17px; color: var(--text); margin-bottom: 8px; }
+    .error-box { text-align: center; padding: 60px 20px; }
     .error-box p { font-size: 14px; color: var(--muted); margin-bottom: 20px; font-family: 'Noto Sans Devanagari', sans-serif; }
-
     .retry-btn {
-      background: var(--text);
-      color: var(--bg);
-      border: none;
-      padding: 10px 24px;
-      border-radius: 10px;
-      font-size: 14px;
-      cursor: pointer;
+      background: var(--text); color: var(--bg);
+      border: none; padding: 10px 24px; border-radius: 10px;
+      font-size: 14px; cursor: pointer;
       font-family: 'Noto Sans Devanagari', sans-serif;
     }
   </style>
@@ -308,79 +276,158 @@
     </div>
     <div class="day-pill" id="dayPill">...</div>
   </div>
-  <div class="progress-wrap">
-    <div class="progress-track">
-      <div class="progress-fill" id="progressFill"></div>
-    </div>
-    <div class="progress-label" id="progressLabel"></div>
+  <div class="tabs">
+    <button class="tab-btn" id="tab-b" onclick="switchTab('bhugol')">🗺 भूगोल</button>
+    <button class="tab-btn" id="tab-g" onclick="switchTab('science')">🔬 विज्ञान</button>
+    <button class="tab-btn" id="tab-o" onclick="switchTab('math')">📐 Math</button>
   </div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+  <div class="progress-label" id="progressLabel">Loading...</div>
 </div>
 
 <div class="main">
   <div class="done-banner" id="doneBanner">
-    <div class="emoji">✅</div>
-    <h3>सब complete हो गया!</h3>
+    <h3 id="doneTxt">✅ सब complete हो गया!</h3>
     <p>आज का revision खत्म।</p>
   </div>
-
-  <div id="content">
-    <div class="loading">
-      <div class="spinner"></div>
-      <span>Chapters load हो रहे हैं...</span>
-    </div>
-  </div>
+  <div id="content"></div>
 </div>
 
 <script>
-const API = "https://script.google.com/macros/s/AKfycbx2e2C9JBilgw7B4ZdOdb5-MEtkcnPjEB18qYWRTIgkNohmhJc2VXcEMEqm8oyVprYk/exec";
+const API_BS = "https://script.google.com/macros/s/AKfycbx2e2C9JBilgw7B4ZdOdb5-MEtkcnPjEB18qYWRTIgkNohmhJc2VXcEMEqm8oyVprYk/exec";
+const API_MATH = "https://script.google.com/macros/s/AKfycbxk49C7jQafjKBKqR4jPeFzAl2ltlUkd1WXkErL8ih4lXF_19q2eVcFRYr8zCf0OhQBww/exec";
 
-const COLORS = {
-  "भूगोल":   { dot: "dot-blue",  cls: "cls-blue"  },
-  "विज्ञान": { dot: "dot-green", cls: "cls-green" },
-};
-
-const today    = new Date();
-const dateStr  = today.toISOString().slice(0, 10);
+const today   = new Date();
+const dateStr = today.toISOString().slice(0,10);
 const storeKey = "done_" + dateStr;
-let doneSet    = new Set(JSON.parse(localStorage.getItem(storeKey) || "[]"));
-let totalCh    = 0;
+let doneSet   = new Set(JSON.parse(localStorage.getItem(storeKey) || "[]"));
+
+let allData   = { bhugol: null, science: null, math: null };
+let activeTab = "bhugol";
 
 document.getElementById("dateText").textContent =
-  today.toLocaleDateString("hi-IN", { weekday: "long", day: "numeric", month: "long" });
+  today.toLocaleDateString("hi-IN", { weekday:"long", day:"numeric", month:"long" });
 
 function save() {
   localStorage.setItem(storeKey, JSON.stringify([...doneSet]));
   updateProgress();
 }
 
-function updateProgress() {
-  const done = doneSet.size;
-  const pct  = totalCh ? Math.round((done / totalCh) * 100) : 0;
-  document.getElementById("progressFill").style.width = pct + "%";
-  document.getElementById("progressLabel").textContent = done + " / " + totalCh + " complete";
-  document.getElementById("doneBanner").classList.toggle("show", done === totalCh && totalCh > 0);
+function countTotal(tab) {
+  if (tab === "math") {
+    if (!allData.math) return 0;
+    return allData.math.chapters.length;
+  }
+  const subj = allData[tab];
+  if (!subj) return 0;
+  return subj.chapters ? subj.chapters.length : 0;
 }
 
-function makeCard(ch, idx, subjectName, clsColor) {
-  const key  = subjectName + "_" + idx;
+function countDone(tab) {
+  let done = 0;
+  doneSet.forEach(k => { if (k.startsWith(tab + "_")) done++; });
+  return done;
+}
+
+function updateProgress() {
+  const total = countTotal(activeTab);
+  const done  = countDone(activeTab);
+  const pct   = total ? Math.round((done/total)*100) : 0;
+  const fill  = document.getElementById("progressFill");
+  fill.style.width = pct + "%";
+  fill.className = "progress-fill fill-" + (activeTab==="bhugol"?"b":activeTab==="science"?"g":"o");
+  document.getElementById("progressLabel").textContent = done + " / " + total + " complete";
+  const allDone = done === total && total > 0;
+  document.getElementById("doneBanner").classList.toggle("show", allDone);
+}
+
+function switchTab(tab) {
+  activeTab = tab;
+  ["bhugol","science","math"].forEach(t => {
+    const btn = document.getElementById("tab-" + (t==="bhugol"?"b":t==="science"?"g":"o"));
+    btn.className = "tab-btn";
+  });
+  const key = tab==="bhugol"?"b":tab==="science"?"g":"o";
+  document.getElementById("tab-"+key).className = "tab-btn active-" + key;
+  renderTab();
+}
+
+function renderTab() {
+  const content = document.getElementById("content");
+  const spinCol = activeTab==="bhugol"?"spin-b":activeTab==="science"?"spin-g":"spin-o";
+
+  if (!allData[activeTab]) {
+    content.innerHTML = '<div class="loading"><div class="spinner ' + spinCol + '"></div><span>Loading...</span></div>';
+    updateProgress();
+    return;
+  }
+
+  content.innerHTML = "";
+
+  if (activeTab === "math") {
+    renderMath(content);
+  } else {
+    renderBhuSci(content);
+  }
+  updateProgress();
+}
+
+function renderBhuSci(content) {
+  const subj = allData[activeTab];
+  if (!subj || !subj.chapters || subj.chapters.length === 0) {
+    content.innerHTML = '<div class="error-box"><p>कोई chapter नहीं मिला।</p></div>';
+    return;
+  }
+  const clr = activeTab === "bhugol" ? "b" : "g";
+  subj.chapters.forEach(function(ch, i) {
+    content.appendChild(makeCard(activeTab + "_" + i, ch.chapter, "Class " + ch.cls, clr));
+  });
+}
+
+function renderMath(content) {
+  const data = allData.math;
+  if (!data || !data.chapters || data.chapters.length === 0) {
+    content.innerHTML = '<div class="error-box"><p>कोई chapter नहीं मिला।</p></div>';
+    return;
+  }
+  data.chapters.forEach(function(ch, i) {
+    const meta = ch.subs.map(function(s) { return "Sub " + s.subNum + ": Q." + s.q; }).join("  •  ");
+    content.appendChild(makeCard("math_" + i, ch.chapter, meta, "o"));
+  });
+}
+
+function makeCard(key, title, subtitle, clr) {
   const done = doneSet.has(key);
   const card = document.createElement("div");
   card.className = "chapter-card" + (done ? " done" : "");
+
+  const pillClass = "pill pill-" + clr;
+  const checkClass = "check-box check-" + clr + (done ? " checked" : "");
+
   card.innerHTML =
     '<div class="chapter-info">' +
-      '<div class="chapter-name">' + ch.chapter + '</div>' +
-      '<span class="chapter-cls ' + clsColor + '">Class ' + ch.cls + '</span>' +
+      '<div class="chapter-name">' + title + '</div>' +
+      '<div class="chapter-meta">' +
+        '<span class="' + pillClass + '">' + subtitle + '</span>' +
+      '</div>' +
     '</div>' +
-    '<div class="check-box">' + (done ? "✓" : "") + '</div>';
+    '<div class="' + checkClass + '">' + (done ? "✓" : "") + '</div>';
 
   card.addEventListener("click", function() {
     if (doneSet.has(key)) {
       doneSet.delete(key);
       card.classList.remove("done");
+      card.querySelector(".check-box").className = "check-box check-" + clr;
       card.querySelector(".check-box").textContent = "";
     } else {
       doneSet.add(key);
       card.classList.add("done");
+      card.querySelector(".check-box").className = "check-box check-" + clr + " checked";
       card.querySelector(".check-box").textContent = "✓";
     }
     save();
@@ -388,49 +435,44 @@ function makeCard(ch, idx, subjectName, clsColor) {
   return card;
 }
 
-function render(data) {
-  document.getElementById("dayPill").textContent = "Day " + data.day;
-  totalCh = data.subjects.reduce(function(s, sub) { return s + sub.chapters.length; }, 0);
-
-  const content = document.getElementById("content");
-  content.innerHTML = "";
-
-  data.subjects.forEach(function(sub) {
-    if (!sub.chapters.length) return;
-    const colors = COLORS[sub.name] || { dot: "dot-blue", cls: "cls-blue" };
-
-    const block = document.createElement("div");
-    block.className = "subject-block";
-
-    const label = document.createElement("div");
-    label.className = "subject-label";
-    label.innerHTML =
-      '<div class="subject-dot ' + colors.dot + '"></div>' +
-      '<div class="subject-name">' + sub.name + '</div>' +
-      '<div class="subject-count">' + sub.chapters.length + ' chapters</div>';
-    block.appendChild(label);
-
-    sub.chapters.forEach(function(ch, i) {
-      block.appendChild(makeCard(ch, i, sub.name, colors.cls));
-    });
-
-    content.appendChild(block);
-  });
-
-  updateProgress();
-}
-
-fetch(API)
+// Load Bhugol+Science
+fetch(API_BS)
   .then(function(r) { return r.json(); })
-  .then(function(data) { render(data); })
+  .then(function(data) {
+    document.getElementById("dayPill").textContent = "Day " + data.day;
+    // Split subjects
+    data.subjects.forEach(function(sub) {
+      if (sub.name === "भूगोल") {
+        allData.bhugol = { chapters: sub.chapters };
+      } else if (sub.name === "विज्ञान") {
+        allData.science = { chapters: sub.chapters };
+      }
+    });
+    if (activeTab === "bhugol" || activeTab === "science") renderTab();
+  })
   .catch(function() {
-    document.getElementById("content").innerHTML =
-      '<div class="error-box">' +
-        '<h2>Data load नहीं हुआ</h2>' +
-        '<p>Internet check करो और dobara try करो।</p>' +
-        '<button class="retry-btn" onclick="location.reload()">Retry</button>' +
-      '</div>';
+    if (activeTab === "bhugol" || activeTab === "science") {
+      document.getElementById("content").innerHTML =
+        '<div class="error-box"><p>Data load नहीं हुआ।</p><button class="retry-btn" onclick="location.reload()">Retry</button></div>';
+    }
   });
+
+// Load Math
+fetch(API_MATH)
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    allData.math = data;
+    if (activeTab === "math") renderTab();
+  })
+  .catch(function() {
+    if (activeTab === "math") {
+      document.getElementById("content").innerHTML =
+        '<div class="error-box"><p>Math data load नहीं हुआ।</p><button class="retry-btn" onclick="location.reload()">Retry</button></div>';
+    }
+  });
+
+// Init
+switchTab("bhugol");
 </script>
 </body>
 </html>
