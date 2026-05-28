@@ -26,6 +26,7 @@
       --pill-g: #e8faf4;
       --pill-o: #fef3c7;
       --radius: 14px;
+      --safe-top: env(safe-area-inset-top, 0px);
     }
 
     @media (prefers-color-scheme: dark) {
@@ -34,7 +35,7 @@
         --card: #1c1c1e;
         --border: #2c2c2e;
         --text: #f2f2f7;
-        --muted: #888;
+        --muted: #666;
         --accent-b: #4a9eff;
         --accent-g: #30d158;
         --accent-o: #fbbf24;
@@ -55,7 +56,10 @@
     .header {
       background: var(--card);
       border-bottom: 1px solid var(--border);
-      padding: 52px 20px 0;
+      padding-top: calc(var(--safe-top) + 12px);
+      padding-left: 20px;
+      padding-right: 20px;
+      padding-bottom: 0;
       position: sticky;
       top: 0;
       z-index: 10;
@@ -66,12 +70,12 @@
       align-items: flex-start;
       justify-content: space-between;
       gap: 12px;
-      padding-bottom: 14px;
+      padding-bottom: 12px;
     }
 
     .header h1 {
       font-family: 'Noto Sans Devanagari', sans-serif;
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 600;
       color: var(--text);
       line-height: 1.3;
@@ -85,7 +89,7 @@
       padding: 4px 12px;
       border-radius: 20px;
       white-space: nowrap;
-      margin-top: 3px;
+      margin-top: 2px;
       flex-shrink: 0;
       font-family: 'Inter', sans-serif;
     }
@@ -93,21 +97,18 @@
     .header-date {
       font-size: 13px;
       color: var(--muted);
-      margin-top: 4px;
+      margin-top: 2px;
       font-family: 'Noto Sans Devanagari', sans-serif;
     }
 
     .tabs {
       display: flex;
       border-top: 1px solid var(--border);
-      overflow-x: auto;
-      scrollbar-width: none;
     }
-    .tabs::-webkit-scrollbar { display: none; }
 
     .tab-btn {
       flex: 1;
-      padding: 12px 8px;
+      padding: 11px 8px;
       font-size: 13px;
       font-weight: 500;
       font-family: 'Noto Sans Devanagari', sans-serif;
@@ -126,7 +127,7 @@
     .tab-btn.active-o { color: var(--accent-o); border-bottom-color: var(--accent-o); }
 
     .progress-wrap {
-      padding: 10px 20px 14px;
+      padding: 8px 20px 12px;
       background: var(--card);
       border-bottom: 1px solid var(--border);
     }
@@ -156,13 +157,25 @@
       font-family: 'Inter', sans-serif;
     }
 
-    .main { padding: 20px 16px 0; max-width: 520px; margin: 0 auto; }
+    /* Stale indicator */
+    .stale-bar {
+      display: none;
+      background: var(--pill-o);
+      color: var(--accent-o);
+      font-size: 11px;
+      text-align: center;
+      padding: 4px;
+      font-family: 'Inter', sans-serif;
+    }
+    .stale-bar.show { display: block; }
+
+    .main { padding: 16px 16px 0; max-width: 520px; margin: 0 auto; }
 
     .done-banner {
       display: none;
       text-align: center;
-      padding: 20px;
-      margin: 0 0 24px;
+      padding: 18px;
+      margin: 0 0 16px;
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: var(--radius);
@@ -170,21 +183,20 @@
     .done-banner.show { display: block; }
     .done-banner h3 {
       font-family: 'Noto Sans Devanagari', sans-serif;
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 600;
     }
     .done-banner p { font-size: 13px; color: var(--muted); margin-top: 4px; font-family: 'Noto Sans Devanagari', sans-serif; }
 
-    /* Chapter card */
     .chapter-card {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 16px;
+      padding: 14px 16px;
       margin-bottom: 10px;
       display: flex;
       align-items: flex-start;
-      gap: 14px;
+      gap: 12px;
       cursor: pointer;
       transition: opacity 0.2s;
       -webkit-tap-highlight-color: transparent;
@@ -196,15 +208,14 @@
     .chapter-info { flex: 1; min-width: 0; }
 
     .chapter-name {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 500;
       color: var(--text);
       line-height: 1.4;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
     .chapter-card.done .chapter-name { text-decoration: line-through; color: var(--muted); }
 
-    /* Bhugol/Science pill */
     .cls-pill {
       display: inline-block;
       font-size: 12px;
@@ -217,7 +228,6 @@
     .pill-g { background: var(--pill-g); color: var(--accent-g); }
     .pill-o { background: var(--pill-o); color: var(--accent-o); }
 
-    /* Math sub rows */
     .sub-list { display: flex; flex-direction: column; gap: 6px; }
 
     .sub-row {
@@ -252,7 +262,7 @@
       flex-shrink: 0;
       font-size: 13px;
       transition: all 0.2s;
-      margin-top: 2px;
+      margin-top: 1px;
     }
     .check-b.checked { background: var(--accent-b); border-color: var(--accent-b); color: #fff; }
     .check-g.checked { background: var(--accent-g); border-color: var(--accent-g); color: #fff; }
@@ -260,10 +270,10 @@
 
     .loading {
       display: flex; flex-direction: column; align-items: center;
-      padding: 80px 20px; gap: 14px; color: var(--muted); font-size: 14px;
+      padding: 60px 20px; gap: 14px; color: var(--muted); font-size: 14px;
     }
     .spinner {
-      width: 28px; height: 28px;
+      width: 26px; height: 26px;
       border: 2px solid var(--border);
       border-radius: 50%;
       animation: spin 0.7s linear infinite;
@@ -273,8 +283,8 @@
     .spin-o { border-top-color: var(--accent-o); }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    .error-box { text-align: center; padding: 60px 20px; }
-    .error-box p { font-size: 14px; color: var(--muted); margin-bottom: 20px; font-family: 'Noto Sans Devanagari', sans-serif; }
+    .error-box { text-align: center; padding: 50px 20px; }
+    .error-box p { font-size: 14px; color: var(--muted); margin-bottom: 16px; font-family: 'Noto Sans Devanagari', sans-serif; }
     .retry-btn {
       background: var(--text); color: var(--bg);
       border: none; padding: 10px 24px; border-radius: 10px;
@@ -305,6 +315,7 @@
   </div>
   <div class="progress-label" id="progressLabel">Loading...</div>
 </div>
+<div class="stale-bar" id="staleBar">⟳ Updating data...</div>
 
 <div class="main">
   <div class="done-banner" id="doneBanner">
@@ -320,37 +331,55 @@ const API_MATH = "https://script.google.com/macros/s/AKfycbxk49C7jQafjKBKqR4jPeF
 
 const today    = new Date();
 const dateStr  = today.toISOString().slice(0,10);
-const storeKey = "done_" + dateStr;
-let doneSet    = new Set(JSON.parse(localStorage.getItem(storeKey) || "[]"));
-let allData    = { bhugol: null, science: null, math: null };
-let dayNums    = { bs: null, math: null };
-let activeTab  = "bhugol";
+const doneKey  = "done_" + dateStr;
+const cacheKey = "cache_" + dateStr;
+
+let doneSet  = new Set(JSON.parse(localStorage.getItem(doneKey) || "[]"));
+let allData  = { bhugol: null, science: null, math: null };
+let dayNums  = { bs: null, math: null };
+let activeTab = "bhugol";
 
 document.getElementById("dateText").textContent =
   today.toLocaleDateString("hi-IN", { weekday:"long", day:"numeric", month:"long" });
 
+// Load cache first
+var cached = localStorage.getItem(cacheKey);
+if (cached) {
+  try {
+    var c = JSON.parse(cached);
+    if (c.bs) {
+      dayNums.bs = c.bs.day;
+      c.bs.subjects.forEach(function(sub) {
+        if (sub.name === "भूगोल") allData.bhugol = { chapters: sub.chapters };
+        else if (sub.name === "विज्ञान") allData.science = { chapters: sub.chapters };
+      });
+    }
+    if (c.math) {
+      dayNums.math = c.math.day;
+      allData.math = c.math;
+    }
+  } catch(e) {}
+}
+
 function save() {
-  localStorage.setItem(storeKey, JSON.stringify([...doneSet]));
+  localStorage.setItem(doneKey, JSON.stringify([...doneSet]));
   updateProgress();
 }
 
 function countTotal(tab) {
   var d = allData[tab];
-  if (!d) return 0;
-  return d.chapters ? d.chapters.length : 0;
+  if (!d || !d.chapters) return 0;
+  return d.chapters.length;
 }
 
 function countDone(tab) {
   var done = 0;
-  doneSet.forEach(function(k) { if (k.startsWith(tab + "_")) done++; });
+  doneSet.forEach(function(k) { if (k.startsWith(tab+"_")) done++; });
   return done;
 }
 
 function updateDayPill() {
-  var tab = activeTab;
-  var day = null;
-  if (tab === "math") day = dayNums.math;
-  else day = dayNums.bs;
+  var day = activeTab === "math" ? dayNums.math : dayNums.bs;
   document.getElementById("dayPill").textContent = day ? "Day " + day : "...";
 }
 
@@ -363,7 +392,7 @@ function updateProgress() {
   var clr = activeTab==="bhugol"?"b":activeTab==="science"?"g":"o";
   fill.className = "progress-fill fill-" + clr;
   document.getElementById("progressLabel").textContent = done + " / " + total + " complete";
-  document.getElementById("doneBanner").classList.toggle("show", done === total && total > 0);
+  document.getElementById("doneBanner").classList.toggle("show", done===total && total>0);
 }
 
 function switchTab(tab) {
@@ -426,16 +455,11 @@ function makeMathCard(key, ch) {
   var done = doneSet.has(key);
   var card = document.createElement("div");
   card.className = "chapter-card" + (done?" done":"");
-
   var subsHtml = '<div class="sub-list">';
   ch.subs.forEach(function(s) {
-    subsHtml += '<div class="sub-row">' +
-      '<span class="sub-label">Sub ' + s.subNum + '</span>' +
-      '<span class="sub-q">Q. ' + s.q + '</span>' +
-    '</div>';
+    subsHtml += '<div class="sub-row"><span class="sub-label">Sub '+s.subNum+'</span><span class="sub-q">Q. '+s.q+'</span></div>';
   });
   subsHtml += '</div>';
-
   card.innerHTML =
     '<div class="chapter-info">' +
       '<div class="chapter-name">' + ch.chapter + '</div>' +
@@ -461,10 +485,28 @@ function toggleDone(key, card, clr) {
   save();
 }
 
-// Fetch Bhugol + Science
+// Init from cache if available
+switchTab("bhugol");
+
+// Fetch fresh data in background
+var cacheObj = {};
+var bsDone = false, mathDone = false;
+
+function saveCache() {
+  if (bsDone && mathDone) {
+    localStorage.setItem(cacheKey, JSON.stringify(cacheObj));
+    document.getElementById("staleBar").classList.remove("show");
+  }
+}
+
+if (cached) {
+  document.getElementById("staleBar").classList.add("show");
+}
+
 fetch(API_BS)
   .then(function(r) { return r.json(); })
   .then(function(data) {
+    cacheObj.bs = data;
     dayNums.bs = data.day;
     data.subjects.forEach(function(sub) {
       if (sub.name === "भूगोल") allData.bhugol = { chapters: sub.chapters };
@@ -474,33 +516,39 @@ fetch(API_BS)
       updateDayPill();
       renderTab();
     }
+    bsDone = true;
+    saveCache();
   })
   .catch(function() {
-    if (activeTab === "bhugol" || activeTab === "science") {
+    bsDone = true;
+    saveCache();
+    if (!allData.bhugol && (activeTab==="bhugol"||activeTab==="science")) {
       document.getElementById("content").innerHTML =
         '<div class="error-box"><p>Data load नहीं हुआ।</p><button class="retry-btn" onclick="location.reload()">Retry</button></div>';
     }
   });
 
-// Fetch Math
 fetch(API_MATH)
   .then(function(r) { return r.json(); })
   .then(function(data) {
+    cacheObj.math = data;
     dayNums.math = data.day;
     allData.math = data;
     if (activeTab === "math") {
       updateDayPill();
       renderTab();
     }
+    mathDone = true;
+    saveCache();
   })
   .catch(function() {
-    if (activeTab === "math") {
+    mathDone = true;
+    saveCache();
+    if (!allData.math && activeTab==="math") {
       document.getElementById("content").innerHTML =
         '<div class="error-box"><p>Math data load नहीं हुआ।</p><button class="retry-btn" onclick="location.reload()">Retry</button></div>';
     }
   });
-
-switchTab("bhugol");
 </script>
 </body>
 </html>
