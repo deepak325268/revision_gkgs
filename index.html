@@ -97,10 +97,8 @@
       font-family: 'Noto Sans Devanagari', sans-serif;
     }
 
-    /* Tab buttons */
     .tabs {
       display: flex;
-      gap: 0;
       border-top: 1px solid var(--border);
       overflow-x: auto;
       scrollbar-width: none;
@@ -127,7 +125,6 @@
     .tab-btn.active-g { color: var(--accent-g); border-bottom-color: var(--accent-g); }
     .tab-btn.active-o { color: var(--accent-o); border-bottom-color: var(--accent-o); }
 
-    /* Progress */
     .progress-wrap {
       padding: 10px 20px 14px;
       background: var(--card);
@@ -161,7 +158,6 @@
 
     .main { padding: 20px 16px 0; max-width: 520px; margin: 0 auto; }
 
-    /* Done banner */
     .done-banner {
       display: none;
       text-align: center;
@@ -184,10 +180,10 @@
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 14px 16px;
-      margin-bottom: 8px;
+      padding: 16px;
+      margin-bottom: 10px;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 14px;
       cursor: pointer;
       transition: opacity 0.2s;
@@ -195,31 +191,25 @@
       user-select: none;
     }
     .chapter-card:active { opacity: 0.7; }
-    .chapter-card.done { opacity: 0.5; }
+    .chapter-card.done { opacity: 0.45; }
 
     .chapter-info { flex: 1; min-width: 0; }
 
     .chapter-name {
-      font-family: 'Noto Sans Devanagari', sans-serif;
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 500;
       color: var(--text);
       line-height: 1.4;
+      margin-bottom: 10px;
     }
     .chapter-card.done .chapter-name { text-decoration: line-through; color: var(--muted); }
 
-    .chapter-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 6px;
-    }
-
-    .pill {
+    /* Bhugol/Science pill */
+    .cls-pill {
       display: inline-block;
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 500;
-      padding: 2px 8px;
+      padding: 3px 10px;
       border-radius: 6px;
       font-family: 'Inter', sans-serif;
     }
@@ -227,20 +217,47 @@
     .pill-g { background: var(--pill-g); color: var(--accent-g); }
     .pill-o { background: var(--pill-o); color: var(--accent-o); }
 
+    /* Math sub rows */
+    .sub-list { display: flex; flex-direction: column; gap: 6px; }
+
+    .sub-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sub-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      font-family: 'Inter', sans-serif;
+      min-width: 44px;
+    }
+
+    .sub-q {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--accent-o);
+      font-family: 'Inter', sans-serif;
+      background: var(--pill-o);
+      padding: 2px 10px;
+      border-radius: 6px;
+    }
+
     .check-box {
-      width: 22px; height: 22px;
+      width: 24px; height: 24px;
       border-radius: 50%;
       border: 1.5px solid var(--border);
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
-      font-size: 12px;
+      font-size: 13px;
       transition: all 0.2s;
+      margin-top: 2px;
     }
     .check-b.checked { background: var(--accent-b); border-color: var(--accent-b); color: #fff; }
     .check-g.checked { background: var(--accent-g); border-color: var(--accent-g); color: #fff; }
     .check-o.checked { background: var(--accent-o); border-color: var(--accent-o); color: #fff; }
 
-    /* Loading */
     .loading {
       display: flex; flex-direction: column; align-items: center;
       padding: 80px 20px; gap: 14px; color: var(--muted); font-size: 14px;
@@ -262,7 +279,6 @@
       background: var(--text); color: var(--bg);
       border: none; padding: 10px 24px; border-radius: 10px;
       font-size: 14px; cursor: pointer;
-      font-family: 'Noto Sans Devanagari', sans-serif;
     }
   </style>
 </head>
@@ -292,23 +308,23 @@
 
 <div class="main">
   <div class="done-banner" id="doneBanner">
-    <h3 id="doneTxt">✅ सब complete हो गया!</h3>
+    <h3>✅ सब complete हो गया!</h3>
     <p>आज का revision खत्म।</p>
   </div>
   <div id="content"></div>
 </div>
 
 <script>
-const API_BS = "https://script.google.com/macros/s/AKfycbx2e2C9JBilgw7B4ZdOdb5-MEtkcnPjEB18qYWRTIgkNohmhJc2VXcEMEqm8oyVprYk/exec";
+const API_BS   = "https://script.google.com/macros/s/AKfycbx2e2C9JBilgw7B4ZdOdb5-MEtkcnPjEB18qYWRTIgkNohmhJc2VXcEMEqm8oyVprYk/exec";
 const API_MATH = "https://script.google.com/macros/s/AKfycbxk49C7jQafjKBKqR4jPeFzAl2ltlUkd1WXkErL8ih4lXF_19q2eVcFRYr8zCf0OhQBww/exec";
 
-const today   = new Date();
-const dateStr = today.toISOString().slice(0,10);
+const today    = new Date();
+const dateStr  = today.toISOString().slice(0,10);
 const storeKey = "done_" + dateStr;
-let doneSet   = new Set(JSON.parse(localStorage.getItem(storeKey) || "[]"));
-
-let allData   = { bhugol: null, science: null, math: null };
-let activeTab = "bhugol";
+let doneSet    = new Set(JSON.parse(localStorage.getItem(storeKey) || "[]"));
+let allData    = { bhugol: null, science: null, math: null };
+let dayNums    = { bs: null, math: null };
+let activeTab  = "bhugol";
 
 document.getElementById("dateText").textContent =
   today.toLocaleDateString("hi-IN", { weekday:"long", day:"numeric", month:"long" });
@@ -319,136 +335,145 @@ function save() {
 }
 
 function countTotal(tab) {
-  if (tab === "math") {
-    if (!allData.math) return 0;
-    return allData.math.chapters.length;
-  }
-  const subj = allData[tab];
-  if (!subj) return 0;
-  return subj.chapters ? subj.chapters.length : 0;
+  var d = allData[tab];
+  if (!d) return 0;
+  return d.chapters ? d.chapters.length : 0;
 }
 
 function countDone(tab) {
-  let done = 0;
-  doneSet.forEach(k => { if (k.startsWith(tab + "_")) done++; });
+  var done = 0;
+  doneSet.forEach(function(k) { if (k.startsWith(tab + "_")) done++; });
   return done;
 }
 
+function updateDayPill() {
+  var tab = activeTab;
+  var day = null;
+  if (tab === "math") day = dayNums.math;
+  else day = dayNums.bs;
+  document.getElementById("dayPill").textContent = day ? "Day " + day : "...";
+}
+
 function updateProgress() {
-  const total = countTotal(activeTab);
-  const done  = countDone(activeTab);
-  const pct   = total ? Math.round((done/total)*100) : 0;
-  const fill  = document.getElementById("progressFill");
+  var total = countTotal(activeTab);
+  var done  = countDone(activeTab);
+  var pct   = total ? Math.round((done/total)*100) : 0;
+  var fill  = document.getElementById("progressFill");
   fill.style.width = pct + "%";
-  fill.className = "progress-fill fill-" + (activeTab==="bhugol"?"b":activeTab==="science"?"g":"o");
+  var clr = activeTab==="bhugol"?"b":activeTab==="science"?"g":"o";
+  fill.className = "progress-fill fill-" + clr;
   document.getElementById("progressLabel").textContent = done + " / " + total + " complete";
-  const allDone = done === total && total > 0;
-  document.getElementById("doneBanner").classList.toggle("show", allDone);
+  document.getElementById("doneBanner").classList.toggle("show", done === total && total > 0);
 }
 
 function switchTab(tab) {
   activeTab = tab;
-  ["bhugol","science","math"].forEach(t => {
-    const btn = document.getElementById("tab-" + (t==="bhugol"?"b":t==="science"?"g":"o"));
-    btn.className = "tab-btn";
+  ["bhugol","science","math"].forEach(function(t) {
+    var k = t==="bhugol"?"b":t==="science"?"g":"o";
+    document.getElementById("tab-"+k).className = "tab-btn";
   });
-  const key = tab==="bhugol"?"b":tab==="science"?"g":"o";
+  var key = tab==="bhugol"?"b":tab==="science"?"g":"o";
   document.getElementById("tab-"+key).className = "tab-btn active-" + key;
+  updateDayPill();
   renderTab();
 }
 
 function renderTab() {
-  const content = document.getElementById("content");
-  const spinCol = activeTab==="bhugol"?"spin-b":activeTab==="science"?"spin-g":"spin-o";
+  var content = document.getElementById("content");
+  var clr = activeTab==="bhugol"?"b":activeTab==="science"?"g":"o";
 
   if (!allData[activeTab]) {
-    content.innerHTML = '<div class="loading"><div class="spinner ' + spinCol + '"></div><span>Loading...</span></div>';
+    content.innerHTML = '<div class="loading"><div class="spinner spin-'+clr+'"></div><span>Loading...</span></div>';
     updateProgress();
     return;
   }
 
   content.innerHTML = "";
+  var data = allData[activeTab];
+
+  if (!data.chapters || data.chapters.length === 0) {
+    content.innerHTML = '<div class="error-box"><p>कोई chapter नहीं मिला।</p></div>';
+    return;
+  }
 
   if (activeTab === "math") {
-    renderMath(content);
+    data.chapters.forEach(function(ch, i) {
+      content.appendChild(makeMathCard("math_"+i, ch));
+    });
   } else {
-    renderBhuSci(content);
+    data.chapters.forEach(function(ch, i) {
+      content.appendChild(makeBSCard(activeTab+"_"+i, ch, clr));
+    });
   }
   updateProgress();
 }
 
-function renderBhuSci(content) {
-  const subj = allData[activeTab];
-  if (!subj || !subj.chapters || subj.chapters.length === 0) {
-    content.innerHTML = '<div class="error-box"><p>कोई chapter नहीं मिला।</p></div>';
-    return;
-  }
-  const clr = activeTab === "bhugol" ? "b" : "g";
-  subj.chapters.forEach(function(ch, i) {
-    content.appendChild(makeCard(activeTab + "_" + i, ch.chapter, "Class " + ch.cls, clr));
-  });
-}
-
-function renderMath(content) {
-  const data = allData.math;
-  if (!data || !data.chapters || data.chapters.length === 0) {
-    content.innerHTML = '<div class="error-box"><p>कोई chapter नहीं मिला।</p></div>';
-    return;
-  }
-  data.chapters.forEach(function(ch, i) {
-    const meta = ch.subs.map(function(s) { return "Sub " + s.subNum + ": Q." + s.q; }).join("  •  ");
-    content.appendChild(makeCard("math_" + i, ch.chapter, meta, "o"));
-  });
-}
-
-function makeCard(key, title, subtitle, clr) {
-  const done = doneSet.has(key);
-  const card = document.createElement("div");
-  card.className = "chapter-card" + (done ? " done" : "");
-
-  const pillClass = "pill pill-" + clr;
-  const checkClass = "check-box check-" + clr + (done ? " checked" : "");
-
+function makeBSCard(key, ch, clr) {
+  var done = doneSet.has(key);
+  var card = document.createElement("div");
+  card.className = "chapter-card" + (done?" done":"");
   card.innerHTML =
     '<div class="chapter-info">' +
-      '<div class="chapter-name">' + title + '</div>' +
-      '<div class="chapter-meta">' +
-        '<span class="' + pillClass + '">' + subtitle + '</span>' +
-      '</div>' +
+      '<div class="chapter-name">' + ch.chapter + '</div>' +
+      '<span class="cls-pill pill-'+clr+'">Class ' + ch.cls + '</span>' +
     '</div>' +
-    '<div class="' + checkClass + '">' + (done ? "✓" : "") + '</div>';
-
-  card.addEventListener("click", function() {
-    if (doneSet.has(key)) {
-      doneSet.delete(key);
-      card.classList.remove("done");
-      card.querySelector(".check-box").className = "check-box check-" + clr;
-      card.querySelector(".check-box").textContent = "";
-    } else {
-      doneSet.add(key);
-      card.classList.add("done");
-      card.querySelector(".check-box").className = "check-box check-" + clr + " checked";
-      card.querySelector(".check-box").textContent = "✓";
-    }
-    save();
-  });
+    '<div class="check-box check-'+clr+(done?" checked":"")+'">'+( done?"✓":"")+'</div>';
+  card.addEventListener("click", function() { toggleDone(key, card, clr); });
   return card;
 }
 
-// Load Bhugol+Science
+function makeMathCard(key, ch) {
+  var done = doneSet.has(key);
+  var card = document.createElement("div");
+  card.className = "chapter-card" + (done?" done":"");
+
+  var subsHtml = '<div class="sub-list">';
+  ch.subs.forEach(function(s) {
+    subsHtml += '<div class="sub-row">' +
+      '<span class="sub-label">Sub ' + s.subNum + '</span>' +
+      '<span class="sub-q">Q. ' + s.q + '</span>' +
+    '</div>';
+  });
+  subsHtml += '</div>';
+
+  card.innerHTML =
+    '<div class="chapter-info">' +
+      '<div class="chapter-name">' + ch.chapter + '</div>' +
+      subsHtml +
+    '</div>' +
+    '<div class="check-box check-o'+(done?" checked":"")+'">'+( done?"✓":"")+'</div>';
+  card.addEventListener("click", function() { toggleDone(key, card, "o"); });
+  return card;
+}
+
+function toggleDone(key, card, clr) {
+  if (doneSet.has(key)) {
+    doneSet.delete(key);
+    card.classList.remove("done");
+    card.querySelector(".check-box").className = "check-box check-"+clr;
+    card.querySelector(".check-box").textContent = "";
+  } else {
+    doneSet.add(key);
+    card.classList.add("done");
+    card.querySelector(".check-box").className = "check-box check-"+clr+" checked";
+    card.querySelector(".check-box").textContent = "✓";
+  }
+  save();
+}
+
+// Fetch Bhugol + Science
 fetch(API_BS)
   .then(function(r) { return r.json(); })
   .then(function(data) {
-    document.getElementById("dayPill").textContent = "Day " + data.day;
-    // Split subjects
+    dayNums.bs = data.day;
     data.subjects.forEach(function(sub) {
-      if (sub.name === "भूगोल") {
-        allData.bhugol = { chapters: sub.chapters };
-      } else if (sub.name === "विज्ञान") {
-        allData.science = { chapters: sub.chapters };
-      }
+      if (sub.name === "भूगोल") allData.bhugol = { chapters: sub.chapters };
+      else if (sub.name === "विज्ञान") allData.science = { chapters: sub.chapters };
     });
-    if (activeTab === "bhugol" || activeTab === "science") renderTab();
+    if (activeTab === "bhugol" || activeTab === "science") {
+      updateDayPill();
+      renderTab();
+    }
   })
   .catch(function() {
     if (activeTab === "bhugol" || activeTab === "science") {
@@ -457,12 +482,16 @@ fetch(API_BS)
     }
   });
 
-// Load Math
+// Fetch Math
 fetch(API_MATH)
   .then(function(r) { return r.json(); })
   .then(function(data) {
+    dayNums.math = data.day;
     allData.math = data;
-    if (activeTab === "math") renderTab();
+    if (activeTab === "math") {
+      updateDayPill();
+      renderTab();
+    }
   })
   .catch(function() {
     if (activeTab === "math") {
@@ -471,7 +500,6 @@ fetch(API_MATH)
     }
   });
 
-// Init
 switchTab("bhugol");
 </script>
 </body>
