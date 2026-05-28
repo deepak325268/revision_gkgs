@@ -1,0 +1,15 @@
+{
+  "name": "आज का Revision",
+  "short_name": "Revision",
+  "start_url": "/revision_gkgs/",
+  "display": "standalone",
+  "background_color": "#f5f5f0",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/revision_gkgs/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
