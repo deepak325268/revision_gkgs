@@ -53,6 +53,7 @@
       font-family: 'Inter', 'Noto Sans Devanagari', sans-serif;
       min-height: 100vh;
       padding-bottom: 60px;
+      overflow-x: hidden;
     }
 
     .header {
@@ -159,7 +160,6 @@
       font-family: 'Inter', sans-serif;
     }
 
-    /* Stale indicator */
     .stale-bar {
       display: none;
       background: var(--pill-o);
@@ -171,7 +171,35 @@
     }
     .stale-bar.show { display: block; }
 
-    .main { padding: 16px 16px 0; max-width: 520px; margin: 0 auto; }
+    /* Swipe animation */
+    .main {
+      padding: 16px 16px 0;
+      max-width: 520px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+
+    #content {
+      transition: transform 0.25s cubic-bezier(.4,0,.2,1), opacity 0.25s;
+    }
+
+    #content.slide-left {
+      animation: slideInLeft 0.25s cubic-bezier(.4,0,.2,1) both;
+    }
+
+    #content.slide-right {
+      animation: slideInRight 0.25s cubic-bezier(.4,0,.2,1) both;
+    }
+
+    @keyframes slideInLeft {
+      from { transform: translateX(60px); opacity: 0; }
+      to   { transform: translateX(0);   opacity: 1; }
+    }
+
+    @keyframes slideInRight {
+      from { transform: translateX(-60px); opacity: 0; }
+      to   { transform: translateX(0);    opacity: 1; }
+    }
 
     .done-banner {
       display: none;
@@ -305,9 +333,9 @@
     <div class="day-pill" id="dayPill">...</div>
   </div>
   <div class="tabs">
-    <button class="tab-btn" id="tab-b" onclick="switchTab('bhugol')">🗺 भूगोल</button>
-    <button class="tab-btn" id="tab-g" onclick="switchTab('science')">🔬 विज्ञान</button>
-    <button class="tab-btn" id="tab-o" onclick="switchTab('math')">📐 Math</button>
+    <button class="tab-btn" id="tab-b" onclick="switchTab('bhugol', null)">🗺 भूगोल</button>
+    <button class="tab-btn" id="tab-g" onclick="switchTab('science', null)">🔬 विज्ञान</button>
+    <button class="tab-btn" id="tab-o" onclick="switchTab('math', null)">📐 Math</button>
   </div>
 </div>
 
@@ -339,12 +367,15 @@ const cacheKey = "cache_" + dateStr;
 let doneSet  = new Set(JSON.parse(localStorage.getItem(doneKey) || "[]"));
 let allData  = { bhugol: null, science: null, math: null };
 let dayNums  = { bs: null, math: null };
-let activeTab = "bhugol";
+
+var savedTab = localStorage.getItem("activeTab") || "bhugol";
+let activeTab = savedTab;
+
+const TABS = ["bhugol", "science", "math"];
 
 document.getElementById("dateText").textContent =
   today.toLocaleDateString("hi-IN", { weekday:"long", day:"numeric", month:"long" });
 
-// Load cache first
 var cached = localStorage.getItem(cacheKey);
 if (cached) {
   try {
@@ -397,8 +428,10 @@ function updateProgress() {
   document.getElementById("doneBanner").classList.toggle("show", done===total && total>0);
 }
 
-function switchTab(tab) {
+// direction: 'left' = next tab aa raha, 'right' = prev tab aa raha, null = no animation
+function switchTab(tab, direction) {
   activeTab = tab;
+  localStorage.setItem("activeTab", tab);
   ["bhugol","science","math"].forEach(function(t) {
     var k = t==="bhugol"?"b":t==="science"?"g":"o";
     document.getElementById("tab-"+k).className = "tab-btn";
@@ -406,12 +439,15 @@ function switchTab(tab) {
   var key = tab==="bhugol"?"b":tab==="science"?"g":"o";
   document.getElementById("tab-"+key).className = "tab-btn active-" + key;
   updateDayPill();
-  renderTab();
+  renderTab(direction);
 }
 
-function renderTab() {
+function renderTab(direction) {
   var content = document.getElementById("content");
   var clr = activeTab==="bhugol"?"b":activeTab==="science"?"g":"o";
+
+  // Remove old animation classes
+  content.classList.remove("slide-left", "slide-right");
 
   if (!allData[activeTab]) {
     content.innerHTML = '<div class="loading"><div class="spinner spin-'+clr+'"></div><span>Loading...</span></div>';
@@ -436,6 +472,16 @@ function renderTab() {
       content.appendChild(makeBSCard(activeTab+"_"+i, ch, clr));
     });
   }
+
+  // Apply animation
+  if (direction === "left") {
+    void content.offsetWidth; // reflow
+    content.classList.add("slide-left");
+  } else if (direction === "right") {
+    void content.offsetWidth;
+    content.classList.add("slide-right");
+  }
+
   updateProgress();
 }
 
@@ -487,10 +533,33 @@ function toggleDone(key, card, clr) {
   save();
 }
 
-// Init from cache if available
-switchTab("bhugol");
+// Init
+switchTab(activeTab, null);
 
-// Fetch fresh data in background
+// Swipe detection
+var touchStartX = 0;
+var touchStartY = 0;
+document.addEventListener("touchstart", function(e) {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+}, { passive: true });
+
+document.addEventListener("touchend", function(e) {
+  var dx = e.changedTouches[0].clientX - touchStartX;
+  var dy = e.changedTouches[0].clientY - touchStartY;
+  if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+    var idx = TABS.indexOf(activeTab);
+    if (dx < 0 && idx < TABS.length - 1) {
+      // Left swipe → next tab, content aata hai left se
+      switchTab(TABS[idx + 1], "left");
+    } else if (dx > 0 && idx > 0) {
+      // Right swipe → prev tab, content aata hai right se
+      switchTab(TABS[idx - 1], "right");
+    }
+  }
+}, { passive: true });
+
+// Fetch data
 var cacheObj = {};
 var bsDone = false, mathDone = false;
 
@@ -516,7 +585,7 @@ fetch(API_BS)
     });
     if (activeTab === "bhugol" || activeTab === "science") {
       updateDayPill();
-      renderTab();
+      renderTab(null);
     }
     bsDone = true;
     saveCache();
@@ -538,7 +607,7 @@ fetch(API_MATH)
     allData.math = data;
     if (activeTab === "math") {
       updateDayPill();
-      renderTab();
+      renderTab(null);
     }
     mathDone = true;
     saveCache();
